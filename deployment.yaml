@@ -1,20 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: index
+  name: board
 spec:
-  replicas: 3
+  replicas: 6
+  strategy:
+    type: RollingUpdate  # 기본 롤링 업데이트 전략
+    rollingUpdate:
+      maxSurge: 1      # 최대 1개의 Pod를 추가적으로 생성
+      maxUnavailable: 1  # 최대 1개의 Pod가 비활성화될 수 있음
   selector:
     matchLabels:
-      app: index
+      app: board
   template:
     metadata:
       labels:
-        app: index
+        app: board
     spec:
+      nodeSelector:
+        dtarget: worker 
       containers:
-      - name: index-container
-        image: quay.apps.ocp.komsco.co.kr/komsco/index:latest
+      - name: board-container
+        image: quay.apps.ocp.komsco.co.kr/komsco/board:latest
         ports:
         - containerPort: 80
       imagePullSecrets:
